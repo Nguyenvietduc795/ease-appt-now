@@ -62,8 +62,8 @@ const Help = () => {
       answer: 'We recommend arriving 15 minutes before your scheduled appointment time to complete any necessary paperwork and check-in procedures.'
     },
     {
-      question: 'What if I'm running late for my appointment?',
-      answer: 'If you're running late, please call our support line as soon as possible. We'll try to accommodate you, but if you're more than 15 minutes late, we may need to reschedule your appointment.'
+      question: "What if I'm running late for my appointment?",
+      answer: "If you're running late, please call our support line as soon as possible. We'll try to accommodate you, but if you're more than 15 minutes late, we may need to reschedule your appointment."
     }
   ];
   
