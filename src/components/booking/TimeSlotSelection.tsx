@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { format, parseISO, isSameDay } from 'date-fns';
+import { format, parseISO, isSameDay, isPast } from 'date-fns';
 import { TimeSlot, Doctor } from '@/types';
 import AccessibleCard from '../ui-components/AccessibleCard';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -20,8 +20,13 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  // Group time slots by date
-  const timeSlotsByDate = timeSlots.reduce((acc, slot) => {
+  // Filter out unavailable and past time slots
+  const availableTimeSlots = timeSlots.filter(slot => 
+    slot.available && !isPast(parseISO(slot.startTime))
+  );
+
+  // Group available time slots by date
+  const timeSlotsByDate = availableTimeSlots.reduce((acc, slot) => {
     const date = parseISO(slot.startTime);
     const dateKey = format(date, 'yyyy-MM-dd');
     
@@ -33,15 +38,22 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
     return acc;
   }, {} as Record<string, TimeSlot[]>);
 
-  // Generate unique dates
-  const availableDates = Object.keys(timeSlotsByDate).map(dateStr => 
-    parseISO(dateStr)
-  ).sort((a, b) => a.getTime() - b.getTime());
+  // Generate unique dates from available slots
+  const availableDates = Object.keys(timeSlotsByDate)
+    .map(dateStr => parseISO(dateStr))
+    .sort((a, b) => a.getTime() - b.getTime());
+
+  // If no dates are available, set the selected date to the first available date
+  React.useEffect(() => {
+    if (availableDates.length > 0 && !timeSlotsByDate[format(selectedDate, 'yyyy-MM-dd')]) {
+      setSelectedDate(availableDates[0]);
+    }
+  }, [availableDates.length]);
 
   // Filter slots for selected date
   const slotsForSelectedDate = timeSlotsByDate[format(selectedDate, 'yyyy-MM-dd')] || [];
-  
-  // Navigate to previous/next date
+
+  // Navigation handlers
   const goToPreviousDate = () => {
     const currentIndex = availableDates.findIndex(date => 
       isSameDay(date, selectedDate)
@@ -60,7 +72,7 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
     }
   };
 
-  // Function to render time slot
+  // Render time slot
   const renderTimeSlot = (slot: TimeSlot) => {
     const startTime = parseISO(slot.startTime);
     const endTime = parseISO(slot.endTime);
@@ -69,19 +81,33 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
       <AccessibleCard
         key={slot.id}
         selected={selectedTimeSlot === slot.id}
-        onClick={() => slot.available ? onSelectTimeSlot(slot.id) : null}
-        hoverable={slot.available}
-        className={`text-center ${!slot.available ? 'opacity-50 cursor-not-allowed' : ''}`}
+        onClick={() => onSelectTimeSlot(slot.id)}
+        hoverable={true}
+        className="text-center cursor-pointer"
       >
         <p className="text-lg font-bold">
           {format(startTime, 'h:mm a')} - {format(endTime, 'h:mm a')}
         </p>
-        <p className="text-sm mt-2">
-          {slot.available ? 'Available' : 'Booked'}
+        <p className="text-sm mt-2 text-green-600">
+          Available
         </p>
       </AccessibleCard>
     );
   };
+
+  if (availableDates.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <h3 className="text-xl font-medium text-gray-900 mb-2">
+          No Available Time Slots
+        </h3>
+        <p className="text-gray-600">
+          There are currently no available time slots for this doctor. 
+          Please try selecting a different doctor or check back later.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -143,7 +169,7 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
           slotsForSelectedDate.map(renderTimeSlot)
         ) : (
           <p className="col-span-full text-center text-gray-500 py-8">
-            No time slots available for this date
+            No available time slots for this date
           </p>
         )}
       </div>
