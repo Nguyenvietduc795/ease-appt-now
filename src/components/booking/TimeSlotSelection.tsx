@@ -1,9 +1,9 @@
-
 import React, { useState } from 'react';
 import { format, parseISO, isSameDay, isPast } from 'date-fns';
 import { TimeSlot, Doctor } from '@/types';
 import AccessibleCard from '../ui-components/AccessibleCard';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLanguage } from '@/hooks';
 
 interface TimeSlotSelectionProps {
   timeSlots: TimeSlot[];
@@ -18,14 +18,13 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
   doctor,
   onSelectTimeSlot
 }) => {
+  const { t } = useLanguage();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  // Filter out unavailable and past time slots
   const availableTimeSlots = timeSlots.filter(slot => 
     slot.available && !isPast(parseISO(slot.startTime))
   );
 
-  // Group available time slots by date
   const timeSlotsByDate = availableTimeSlots.reduce((acc, slot) => {
     const date = parseISO(slot.startTime);
     const dateKey = format(date, 'yyyy-MM-dd');
@@ -38,22 +37,18 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
     return acc;
   }, {} as Record<string, TimeSlot[]>);
 
-  // Generate unique dates from available slots
   const availableDates = Object.keys(timeSlotsByDate)
     .map(dateStr => parseISO(dateStr))
     .sort((a, b) => a.getTime() - b.getTime());
 
-  // If no dates are available, set the selected date to the first available date
   React.useEffect(() => {
     if (availableDates.length > 0 && !timeSlotsByDate[format(selectedDate, 'yyyy-MM-dd')]) {
       setSelectedDate(availableDates[0]);
     }
   }, [availableDates.length]);
 
-  // Filter slots for selected date
   const slotsForSelectedDate = timeSlotsByDate[format(selectedDate, 'yyyy-MM-dd')] || [];
 
-  // Navigation handlers
   const goToPreviousDate = () => {
     const currentIndex = availableDates.findIndex(date => 
       isSameDay(date, selectedDate)
@@ -72,7 +67,6 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
     }
   };
 
-  // Render time slot
   const renderTimeSlot = (slot: TimeSlot) => {
     const startTime = parseISO(slot.startTime);
     const endTime = parseISO(slot.endTime);
@@ -89,7 +83,7 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
           {format(startTime, 'h:mm a')} - {format(endTime, 'h:mm a')}
         </p>
         <p className="text-sm mt-2 text-green-600">
-          Available
+          {t('available')}
         </p>
       </AccessibleCard>
     );
@@ -99,11 +93,10 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
     return (
       <div className="text-center py-8">
         <h3 className="text-xl font-medium text-gray-900 mb-2">
-          No Available Time Slots
+          {t('no.slots')}
         </h3>
         <p className="text-gray-600">
-          There are currently no available time slots for this doctor. 
-          Please try selecting a different doctor or check back later.
+          {t('no.slots.message')}
         </p>
       </div>
     );
@@ -111,12 +104,12 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Choose Time Slot</h2>
+      <h2 className="text-2xl font-bold">{t('choose.slot')}</h2>
       
       {doctor && (
         <div className="bg-blue-50 rounded-lg p-4 mb-6">
           <h3 className="font-medium text-lg text-blue-900">
-            Selected Doctor: {doctor.name}
+            {t('selected.doctor')}: {doctor.name}
           </h3>
           <p className="text-blue-800">
             {doctor.specialization}
@@ -147,7 +140,6 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
         </button>
       </div>
       
-      {/* Date Selector Pills */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-4">
         {availableDates.map((date, index) => (
           <button
@@ -166,10 +158,12 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
       
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {slotsForSelectedDate.length > 0 ? (
-          slotsForSelectedDate.map(renderTimeSlot)
+          slotsForSelectedDate.map(slot => (
+            renderTimeSlot(slot)
+          ))
         ) : (
           <p className="col-span-full text-center text-gray-500 py-8">
-            No available time slots for this date
+            {t('no.slots.date')}
           </p>
         )}
       </div>
