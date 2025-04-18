@@ -1,9 +1,10 @@
+
 import React, { useState } from 'react';
 import { format, parseISO, isSameDay, isPast } from 'date-fns';
 import { TimeSlot, Doctor } from '@/types';
 import AccessibleCard from '../ui-components/AccessibleCard';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useLanguage } from '@/hooks';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface TimeSlotSelectionProps {
   timeSlots: TimeSlot[];
