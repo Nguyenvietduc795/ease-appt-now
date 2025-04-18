@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
@@ -8,8 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Clock, CheckCircle, XCircle, Info } from 'lucide-react';
 import { format, parseISO, isPast } from 'date-fns';
 import { toast } from '@/components/ui/sonner';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
-// Mock appointment data
+// Mock appointment data with available time slots
 const mockAppointments = [
   {
     id: '1',
@@ -29,8 +34,29 @@ const mockAppointments = [
   }
 ];
 
+// Mock available time slots for rescheduling
+const mockAvailableTimeSlots = [
+  {
+    id: 't1',
+    startTime: '2025-04-22T09:00:00.000Z',
+    endTime: '2025-04-22T10:00:00.000Z',
+  },
+  {
+    id: 't2',
+    startTime: '2025-04-22T10:00:00.000Z',
+    endTime: '2025-04-22T11:00:00.000Z',
+  },
+  {
+    id: 't3',
+    startTime: '2025-04-22T14:00:00.000Z',
+    endTime: '2025-04-22T15:00:00.000Z',
+  },
+];
+
 const Appointments = () => {
   const [appointments, setAppointments] = useState(mockAppointments);
+  const [isReschedulingOpen, setIsReschedulingOpen] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState<typeof mockAppointments[0] | null>(null);
   
   const handleCancelAppointment = (id: string) => {
     setAppointments(appointments.map(app => 
@@ -39,10 +65,26 @@ const Appointments = () => {
     toast.success('Appointment cancelled successfully');
   };
   
-  const handleReschedule = (id: string) => {
-    // In a real app, you would navigate to a reschedule flow
-    // For now, we'll just show a toast
-    toast.info('Reschedule functionality will be available soon');
+  const handleReschedule = (appointment: typeof mockAppointments[0]) => {
+    setSelectedAppointment(appointment);
+    setIsReschedulingOpen(true);
+  };
+
+  const handleTimeSlotSelect = (newTimeSlot: typeof mockAvailableTimeSlots[0]) => {
+    if (selectedAppointment) {
+      setAppointments(appointments.map(app =>
+        app.id === selectedAppointment.id
+          ? {
+              ...app,
+              date: newTimeSlot.startTime,
+              endTime: newTimeSlot.endTime,
+            }
+          : app
+      ));
+      setIsReschedulingOpen(false);
+      setSelectedAppointment(null);
+      toast.success('Appointment rescheduled successfully');
+    }
   };
   
   // Group appointments by status
@@ -105,7 +147,7 @@ const Appointments = () => {
               <Button 
                 variant="outline"
                 className="w-full md:w-auto"
-                onClick={() => handleReschedule(appointment.id)}
+                onClick={() => handleReschedule(appointment)}
               >
                 Reschedule
               </Button>
@@ -173,6 +215,45 @@ const Appointments = () => {
           )}
         </>
       )}
+
+      {/* Rescheduling Dialog */}
+      <Dialog open={isReschedulingOpen} onOpenChange={setIsReschedulingOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Reschedule Appointment</DialogTitle>
+          </DialogHeader>
+          
+          <div className="mt-4 space-y-4">
+            <div className="text-sm text-gray-600 mb-4">
+              Please select a new time slot for your appointment with {selectedAppointment?.doctorName}
+            </div>
+            
+            <div className="space-y-3">
+              {mockAvailableTimeSlots.map((slot) => (
+                <AccessibleCard
+                  key={slot.id}
+                  onClick={() => handleTimeSlotSelect(slot)}
+                  className="cursor-pointer hover:border-primary-500 transition-colors"
+                >
+                  <div className="flex items-center justify-between p-2">
+                    <div>
+                      <div className="font-medium">
+                        {format(parseISO(slot.startTime), 'EEEE, MMMM d, yyyy')}
+                      </div>
+                      <div className="text-gray-600">
+                        {format(parseISO(slot.startTime), 'h:mm a')} - {format(parseISO(slot.endTime), 'h:mm a')}
+                      </div>
+                    </div>
+                    <Button variant="outline" size="sm">
+                      Select
+                    </Button>
+                  </div>
+                </AccessibleCard>
+              ))}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };
