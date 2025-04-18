@@ -13,13 +13,43 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const translations = {
   en: {
-    // Header
+    // Header & Navigation
     'medical.center': 'Medical Center',
     'nav.home': 'Home',
     'nav.appointments': 'My Appointments',
     'nav.profile': 'Profile',
     'nav.help': 'Help',
     'nav.need.help': 'Need help? Call us',
+
+    // Booking Pages
+    'book.appointment.title': 'Book an Appointment',
+    'book.appointment.subtitle': 'Follow these simple steps to schedule your visit',
+    
+    // Department Selection
+    'department.select': 'Select Department',
+    
+    // Doctor Selection
+    'doctor.select': 'Select Doctor',
+    
+    // Time Slot Selection
+    'time.slot.select': 'Choose Time Slot',
+    
+    // Profile Page
+    'profile.title': 'My Profile',
+    'profile.personal.info': 'Personal Information',
+    'profile.edit': 'Edit Profile',
+    'profile.name': 'Full Name',
+    'profile.phone': 'Phone Number',
+    'profile.email': 'Email',
+    'profile.address': 'Address',
+    
+    // Help Page
+    'help.title': 'Help & Support',
+    'help.subtitle': "We're here to help you with any questions or issues",
+    'help.call.support': 'Call Support',
+    'help.video.guide': 'Video Guide',
+    'help.email.support': 'Email Support',
+    
     // Common
     'available': 'Available',
     'no.slots': 'No Available Time Slots',
@@ -27,15 +57,47 @@ export const translations = {
     'no.slots.date': 'No available time slots for this date',
     'selected.doctor': 'Selected Doctor',
     'choose.slot': 'Choose Time Slot',
+    'save': 'Save',
+    'cancel': 'Cancel',
   },
   vi: {
-    // Header
+    // Header & Navigation
     'medical.center': 'Trung Tâm Y Tế',
     'nav.home': 'Trang Chủ',
     'nav.appointments': 'Lịch Hẹn',
     'nav.profile': 'Hồ Sơ',
     'nav.help': 'Trợ Giúp',
     'nav.need.help': 'Cần trợ giúp? Gọi cho chúng tôi',
+
+    // Booking Pages
+    'book.appointment.title': 'Đặt Lịch Khám',
+    'book.appointment.subtitle': 'Thực hiện các bước đơn giản để đặt lịch khám',
+    
+    // Department Selection
+    'department.select': 'Chọn Khoa',
+    
+    // Doctor Selection
+    'doctor.select': 'Chọn Bác Sĩ',
+    
+    // Time Slot Selection
+    'time.slot.select': 'Chọn Khung Giờ',
+    
+    // Profile Page
+    'profile.title': 'Hồ Sơ Của Tôi',
+    'profile.personal.info': 'Thông Tin Cá Nhân',
+    'profile.edit': 'Chỉnh Sửa Hồ Sơ',
+    'profile.name': 'Tên Đầy Đủ',
+    'profile.phone': 'Số Điện Thoại',
+    'profile.email': 'Thư Điện Tử',
+    'profile.address': 'Địa Chỉ',
+    
+    // Help Page
+    'help.title': 'Hỗ Trợ & Trợ Giúp',
+    'help.subtitle': 'Chúng tôi ở đây để hỗ trợ bạn với mọi câu hỏi',
+    'help.call.support': 'Hỗ Trợ Qua Điện Thoại',
+    'help.video.guide': 'Hướng Dẫn Video',
+    'help.email.support': 'Hỗ Trợ Qua Email',
+    
     // Common
     'available': 'Còn Trống',
     'no.slots': 'Không Có Lịch Trống',
@@ -43,6 +105,8 @@ export const translations = {
     'no.slots.date': 'Không có lịch trống cho ngày này',
     'selected.doctor': 'Bác Sĩ Đã Chọn',
     'choose.slot': 'Chọn Thời Gian',
+    'save': 'Lưu',
+    'cancel': 'Hủy',
   }
 };
 
