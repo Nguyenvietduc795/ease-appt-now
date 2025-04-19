@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
@@ -12,9 +13,6 @@ import {
   ArrowRight,
   CheckCircle
 } from 'lucide-react';
-
-// Import hero image
-import heroImage from '@/assets/hero-image.svg';
 
 const Index = () => {
   const features = [
@@ -68,8 +66,8 @@ const Index = () => {
           </div>
           <div className="md:w-2/5">
             <img 
-              src={heroImage}
-              alt="Medical center appointment booking illustration" 
+              src="/placeholder.svg" 
+              alt="Hospital appointment booking" 
               className="rounded-xl shadow-lg w-full h-auto"
             />
           </div>

@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import PageTitle from '@/components/ui-components/PageTitle';
 import StepIndicator from '@/components/ui-components/StepIndicator';
-import { useLanguage } from '@/contexts/LanguageContext';
 import DepartmentSelection from '@/components/booking/DepartmentSelection';
 import DoctorSelection from '@/components/booking/DoctorSelection';
 import TimeSlotSelection from '@/components/booking/TimeSlotSelection';
@@ -16,7 +15,6 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 const BookAppointment = () => {
   const navigate = useNavigate();
-  const { t } = useLanguage();
   const [step, setStep] = useState(1);
   const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
@@ -24,6 +22,7 @@ const BookAppointment = () => {
   const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
   const [filteredTimeSlots, setFilteredTimeSlots] = useState<TimeSlot[]>([]);
   
+  // Filter doctors based on selected department
   useEffect(() => {
     if (selectedDepartment) {
       const filtered = doctors.filter(doctor => doctor.departmentId === selectedDepartment);
@@ -33,6 +32,7 @@ const BookAppointment = () => {
     }
   }, [selectedDepartment]);
   
+  // Filter time slots based on selected doctor
   useEffect(() => {
     if (selectedDoctor) {
       const filtered = timeSlots.filter(slot => slot.doctorId === selectedDoctor);
@@ -42,15 +42,16 @@ const BookAppointment = () => {
     }
   }, [selectedDoctor]);
   
+  // Step handlers
   const handleDepartmentSelect = (departmentId: string) => {
     setSelectedDepartment(departmentId);
-    setSelectedDoctor(null);
-    setSelectedTimeSlot(null);
+    setSelectedDoctor(null); // Reset doctor when department changes
+    setSelectedTimeSlot(null); // Reset time slot
   };
   
   const handleDoctorSelect = (doctorId: string) => {
     setSelectedDoctor(doctorId);
-    setSelectedTimeSlot(null);
+    setSelectedTimeSlot(null); // Reset time slot when doctor changes
   };
   
   const handleTimeSlotSelect = (timeSlotId: string) => {
@@ -73,6 +74,7 @@ const BookAppointment = () => {
     }
   };
   
+  // Check if current step is complete
   const isStepComplete = () => {
     switch (step) {
       case 1:
@@ -86,6 +88,7 @@ const BookAppointment = () => {
     }
   };
   
+  // Get current department, doctor, and time slot objects
   const currentDepartment = departments.find(dept => dept.id === selectedDepartment);
   const currentDoctor = doctors.find(doc => doc.id === selectedDoctor);
   const currentTimeSlot = timeSlots.find(slot => slot.id === selectedTimeSlot);
@@ -93,8 +96,8 @@ const BookAppointment = () => {
   return (
     <Layout>
       <PageTitle 
-        title={t('book.appointment.title')} 
-        subtitle={t('book.appointment.subtitle')}
+        title="Book an Appointment" 
+        subtitle="Follow these simple steps to schedule your visit"
       />
       
       <StepIndicator 
@@ -104,6 +107,7 @@ const BookAppointment = () => {
       />
       
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8">
+        {/* Step 1: Department Selection */}
         {step === 1 && (
           <DepartmentSelection
             departments={departments}
@@ -112,6 +116,7 @@ const BookAppointment = () => {
           />
         )}
         
+        {/* Step 2: Doctor Selection */}
         {step === 2 && (
           <DoctorSelection
             doctors={filteredDoctors}
@@ -120,6 +125,7 @@ const BookAppointment = () => {
           />
         )}
         
+        {/* Step 3: Time Slot Selection */}
         {step === 3 && (
           <TimeSlotSelection
             timeSlots={filteredTimeSlots}
@@ -129,6 +135,7 @@ const BookAppointment = () => {
           />
         )}
         
+        {/* Step 4: Confirmation */}
         {step === 4 && currentDepartment && currentDoctor && currentTimeSlot && (
           <AppointmentConfirmation
             department={currentDepartment}
@@ -139,6 +146,7 @@ const BookAppointment = () => {
         )}
       </div>
       
+      {/* Navigation Buttons */}
       <div className="flex justify-between mt-6">
         <Button
           variant="outline"
@@ -146,7 +154,7 @@ const BookAppointment = () => {
           disabled={step === 1}
           className="flex items-center gap-2 px-6 py-3 text-lg"
         >
-          <ArrowLeft size={20} /> {t('back')}
+          <ArrowLeft size={20} /> Back
         </Button>
         
         {step < 4 && (
@@ -155,7 +163,7 @@ const BookAppointment = () => {
             disabled={!isStepComplete()}
             className="flex items-center gap-2 px-6 py-3 text-lg"
           >
-            {t('next')} <ArrowRight size={20} />
+            Next <ArrowRight size={20} />
           </Button>
         )}
       </div>

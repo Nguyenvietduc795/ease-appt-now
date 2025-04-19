@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
@@ -7,23 +8,13 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Clock, CheckCircle, XCircle, Info } from 'lucide-react';
 import { format, parseISO, isPast } from 'date-fns';
 import { toast } from '@/components/ui/sonner';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import TimeSlotSelection from '@/components/booking/TimeSlotSelection';
-import { Doctor } from '@/types';
-import { doctors } from '@/data/mockData';
 
-// Mock appointment data with available time slots
+// Mock appointment data
 const mockAppointments = [
   {
     id: '1',
     doctorName: 'Dr. John Smith',
     departmentName: 'Cardiology',
-		doctorId: 'doc1',
     date: '2025-04-15T10:00:00.000Z',
     endTime: '2025-04-15T11:00:00.000Z',
     status: 'scheduled',
@@ -32,42 +23,14 @@ const mockAppointments = [
     id: '2',
     doctorName: 'Dr. Emily Johnson',
     departmentName: 'Dermatology',
-		doctorId: 'doc2',
     date: '2025-04-20T14:00:00.000Z',
     endTime: '2025-04-20T15:00:00.000Z',
     status: 'scheduled',
   }
 ];
 
-// Mock available time slots for rescheduling
-const mockAvailableTimeSlots = [
-  {
-    id: 't1',
-    startTime: '2025-04-22T09:00:00.000Z',
-    endTime: '2025-04-22T10:00:00.000Z',
-		available: true,
-		doctorId: 'doc1',
-  },
-  {
-    id: 't2',
-    startTime: '2025-04-22T10:00:00.000Z',
-    endTime: '2025-04-22T11:00:00.000Z',
-		available: true,
-		doctorId: 'doc1',
-  },
-  {
-    id: 't3',
-    startTime: '2025-04-22T14:00:00.000Z',
-    endTime: '2025-04-22T15:00:00.000Z',
-		available: true,
-		doctorId: 'doc2',
-  },
-];
-
 const Appointments = () => {
   const [appointments, setAppointments] = useState(mockAppointments);
-  const [isReschedulingOpen, setIsReschedulingOpen] = useState(false);
-  const [selectedAppointment, setSelectedAppointment] = useState<typeof mockAppointments[0] | null>(null);
   
   const handleCancelAppointment = (id: string) => {
     setAppointments(appointments.map(app => 
@@ -76,28 +39,10 @@ const Appointments = () => {
     toast.success('Appointment cancelled successfully');
   };
   
-  const handleReschedule = (appointment: typeof mockAppointments[0]) => {
-    setSelectedAppointment(appointment);
-    setIsReschedulingOpen(true);
-  };
-
-  const handleTimeSlotSelect = (newTimeSlotId: string) => {
-    const newTimeSlot = mockAvailableTimeSlots.find(slot => slot.id === newTimeSlotId);
-    
-    if (selectedAppointment && newTimeSlot) {
-      setAppointments(appointments.map(app =>
-        app.id === selectedAppointment.id
-          ? {
-              ...app,
-              date: newTimeSlot.startTime,
-              endTime: newTimeSlot.endTime,
-            }
-          : app
-      ));
-      setIsReschedulingOpen(false);
-      setSelectedAppointment(null);
-      toast.success('Appointment rescheduled successfully');
-    }
+  const handleReschedule = (id: string) => {
+    // In a real app, you would navigate to a reschedule flow
+    // For now, we'll just show a toast
+    toast.info('Reschedule functionality will be available soon');
   };
   
   // Group appointments by status
@@ -160,7 +105,7 @@ const Appointments = () => {
               <Button 
                 variant="outline"
                 className="w-full md:w-auto"
-                onClick={() => handleReschedule(appointment)}
+                onClick={() => handleReschedule(appointment.id)}
               >
                 Reschedule
               </Button>
@@ -228,26 +173,6 @@ const Appointments = () => {
           )}
         </>
       )}
-
-      {/* Rescheduling Dialog */}
-      <Dialog open={isReschedulingOpen} onOpenChange={setIsReschedulingOpen}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Reschedule Appointment</DialogTitle>
-          </DialogHeader>
-          
-          {selectedAppointment && (
-            <TimeSlotSelection
-              timeSlots={mockAvailableTimeSlots}
-              selectedTimeSlot={null}
-              doctor={doctors.find(doc => doc.id === selectedAppointment.doctorId) || null}
-              onSelectTimeSlot={handleTimeSlotSelect}
-              currentAppointmentTime={selectedAppointment.date}
-              isRescheduling={true}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
     </Layout>
   );
 };

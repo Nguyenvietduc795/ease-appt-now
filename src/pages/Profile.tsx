@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import PageTitle from '@/components/ui-components/PageTitle';
@@ -5,12 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/components/ui/sonner';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { User, Phone, Mail, Map, Save, Edit2 } from 'lucide-react';
 
 const Profile = () => {
-  const { t } = useLanguage();
-  
   // Mock user data
   const [user, setUser] = useState({
     name: 'John Doe',
@@ -43,11 +41,11 @@ const Profile = () => {
   
   return (
     <Layout>
-      <PageTitle title={t('profile.title')} />
+      <PageTitle title="My Profile" />
       
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8 mb-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">{t('profile.personal.info')}</h2>
+          <h2 className="text-2xl font-bold">Personal Information</h2>
           {!isEditing && (
             <Button 
               variant="outline"
@@ -55,7 +53,7 @@ const Profile = () => {
               className="gap-2"
             >
               <Edit2 size={18} />
-              {t('profile.edit')}
+              Edit Profile
             </Button>
           )}
         </div>
@@ -66,7 +64,7 @@ const Profile = () => {
             <div>
               <Label htmlFor="name" className="text-base flex items-center gap-2 mb-2">
                 <User size={18} className="text-primary-500" />
-                {t('profile.name')}
+                Full Name
               </Label>
               {isEditing ? (
                 <Input
@@ -85,7 +83,7 @@ const Profile = () => {
             <div>
               <Label htmlFor="phoneNumber" className="text-base flex items-center gap-2 mb-2">
                 <Phone size={18} className="text-primary-500" />
-                {t('profile.phone')}
+                Phone Number
               </Label>
               {isEditing ? (
                 <Input
@@ -104,7 +102,7 @@ const Profile = () => {
             <div>
               <Label htmlFor="email" className="text-base flex items-center gap-2 mb-2">
                 <Mail size={18} className="text-primary-500" />
-                {t('profile.email')}
+                Email
               </Label>
               {isEditing ? (
                 <Input
@@ -124,7 +122,7 @@ const Profile = () => {
             <div>
               <Label htmlFor="address" className="text-base flex items-center gap-2 mb-2">
                 <Map size={18} className="text-primary-500" />
-                {t('profile.address')}
+                Address
               </Label>
               {isEditing ? (
                 <Input
@@ -143,11 +141,11 @@ const Profile = () => {
           {isEditing && (
             <div className="flex gap-4 justify-end mt-8">
               <Button variant="outline" onClick={handleCancel} className="px-6">
-                {t('cancel')}
+                Cancel
               </Button>
               <Button onClick={handleSave} className="gap-2 px-6">
                 <Save size={18} />
-                {t('save')}
+                Save Changes
               </Button>
             </div>
           )}
@@ -155,11 +153,11 @@ const Profile = () => {
       </div>
       
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8">
-        <h2 className="text-2xl font-bold mb-6">{t('profile.account.settings')}</h2>
+        <h2 className="text-2xl font-bold mb-6">Account Settings</h2>
         
         <div className="space-y-6">
           <div>
-            <h3 className="text-xl font-medium mb-3">{t('profile.notification.preferences')}</h3>
+            <h3 className="text-xl font-medium mb-3">Notification Preferences</h3>
             <div className="space-y-3">
               <div className="flex items-center">
                 <input 
@@ -169,7 +167,7 @@ const Profile = () => {
                   defaultChecked 
                 />
                 <label htmlFor="sms-notifications" className="ml-3 text-lg">
-                  {t('profile.sms.appointment.reminders')}
+                  SMS Appointment Reminders
                 </label>
               </div>
               
@@ -181,14 +179,14 @@ const Profile = () => {
                   defaultChecked 
                 />
                 <label htmlFor="email-notifications" className="ml-3 text-lg">
-                  {t('profile.email.notifications')}
+                  Email Notifications
                 </label>
               </div>
             </div>
           </div>
           
           <div>
-            <h3 className="text-xl font-medium mb-3">{t('profile.language.preference')}</h3>
+            <h3 className="text-xl font-medium mb-3">Language Preference</h3>
             <select 
               className="bg-white border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-4"
             >
