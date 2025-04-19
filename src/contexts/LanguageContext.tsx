@@ -65,6 +65,10 @@ export const translations = {
     'current.slot': 'Current Appointment',
     'previous.date': 'Previous date',
     'next.date': 'Next date',
+
+    // Time Slot Messages
+    'slot.past': 'This time slot is no longer available as it has passed',
+    'slot.outside.hours': 'This time slot is outside hospital working hours (8 AM - 6 PM)',
   },
   vi: {
     // Header & Navigation
@@ -120,6 +124,10 @@ export const translations = {
     'current.slot': 'Lịch Hẹn Hiện Tại',
     'previous.date': 'Ngày trước',
     'next.date': 'Ngày sau',
+
+    // Time Slot Messages
+    'slot.past': 'Khung giờ này không còn khả dụng vì đã qua',
+    'slot.outside.hours': 'Khung giờ này nằm ngoài giờ làm việc của bệnh viện (8:00 - 18:00)',
   }
 };
 

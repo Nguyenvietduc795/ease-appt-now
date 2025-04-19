@@ -1,19 +1,29 @@
-
 import React, { useState } from 'react';
-import { format, parseISO, isSameDay, isPast, isAfter } from 'date-fns';
+import { format, parseISO, isSameDay, isPast, isAfter, setHours, setMinutes } from 'date-fns';
 import { TimeSlot, Doctor } from '@/types';
 import AccessibleCard from '../ui-components/AccessibleCard';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { toast } from '@/components/ui/sonner';
 
 interface TimeSlotSelectionProps {
   timeSlots: TimeSlot[];
   selectedTimeSlot: string | null;
   doctor: Doctor | null;
   onSelectTimeSlot: (timeSlotId: string) => void;
-  currentAppointmentTime?: string; // Optional, used for rescheduling
+  currentAppointmentTime?: string;
   isRescheduling?: boolean;
 }
+
+const HOSPITAL_HOURS = {
+  start: 8,
+  end: 18,
+};
+
+const isWithinWorkingHours = (date: Date): boolean => {
+  const hour = date.getHours();
+  return hour >= HOSPITAL_HOURS.start && hour < HOSPITAL_HOURS.end;
+};
 
 const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
   timeSlots,
@@ -26,14 +36,14 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
   const { t } = useLanguage();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  // Filter out past time slots and the current appointment slot when rescheduling
   const availableTimeSlots = timeSlots.filter(slot => {
     const slotTime = parseISO(slot.startTime);
     const isPastSlot = isPast(slotTime);
     const isCurrentSlot = currentAppointmentTime && slot.startTime === currentAppointmentTime;
     const isAvailable = slot.available;
+    const isWorkingHours = isWithinWorkingHours(slotTime);
 
-    return isAvailable && !isPastSlot && (!isRescheduling || !isCurrentSlot);
+    return isAvailable && !isPastSlot && (!isRescheduling || !isCurrentSlot) && isWorkingHours;
   });
 
   const timeSlotsByDate = availableTimeSlots.reduce((acc, slot) => {
@@ -78,23 +88,51 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
     }
   };
 
+  const handleTimeSlotSelection = (slotId: string) => {
+    const selectedSlot = timeSlots.find(slot => slot.id === slotId);
+    if (!selectedSlot) return;
+
+    const slotTime = parseISO(selectedSlot.startTime);
+
+    if (isPast(slotTime)) {
+      toast.error(t('slot.past'));
+      return;
+    }
+
+    if (!isWithinWorkingHours(slotTime)) {
+      toast.error(t('slot.outside.hours'));
+      return;
+    }
+
+    onSelectTimeSlot(slotId);
+  };
+
   const renderTimeSlot = (slot: TimeSlot) => {
     const startTime = parseISO(slot.startTime);
     const endTime = parseISO(slot.endTime);
     const isCurrentAppointment = currentAppointmentTime === slot.startTime;
+    const isWorkingHours = isWithinWorkingHours(startTime);
+    const isPastTime = isPast(startTime);
+    
+    if (!isWorkingHours || isPastTime) {
+      return null;
+    }
     
     return (
       <AccessibleCard
         key={slot.id}
         selected={selectedTimeSlot === slot.id}
-        onClick={() => onSelectTimeSlot(slot.id)}
+        onClick={() => handleTimeSlotSelection(slot.id)}
         hoverable={true}
         className={`text-center cursor-pointer ${isCurrentAppointment ? 'border-primary-500' : ''}`}
       >
-        <p className="text-lg font-bold">
-          {format(startTime, 'h:mm a')} - {format(endTime, 'h:mm a')}
-        </p>
-        <p className={`text-sm mt-2 ${isCurrentAppointment ? 'text-primary-600' : 'text-green-600'}`}>
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <Clock size={18} className="text-primary-500" />
+          <p className="text-lg font-bold">
+            {format(startTime, 'h:mm a')} - {format(endTime, 'h:mm a')}
+          </p>
+        </div>
+        <p className={`text-sm ${isCurrentAppointment ? 'text-primary-600' : 'text-green-600'}`}>
           {isCurrentAppointment ? t('current.slot') : t('available')}
         </p>
       </AccessibleCard>
@@ -184,4 +222,3 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
 };
 
 export default TimeSlotSelection;
-
