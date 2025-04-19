@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { format, parseISO, isSameDay, isPast, isAfter, setHours, setMinutes } from 'date-fns';
 import { TimeSlot, Doctor } from '@/types';
@@ -68,6 +69,7 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
     }
   }, [availableDates.length]);
 
+  // Only get slots for the specifically selected date
   const slotsForSelectedDate = timeSlotsByDate[format(selectedDate, 'yyyy-MM-dd')] || [];
 
   const goToPreviousDate = () => {
