@@ -1,6 +1,5 @@
-
-import React, { useState } from 'react';
-import { format, parseISO, isSameDay, isPast, isAfter, setHours, setMinutes } from 'date-fns';
+import React, { useState, useMemo } from 'react';
+import { format, parseISO, isSameDay, isPast, addDays, startOfTomorrow } from 'date-fns';
 import { TimeSlot, Doctor } from '@/types';
 import AccessibleCard from '../ui-components/AccessibleCard';
 import { ChevronLeft, ChevronRight, Clock } from 'lucide-react';
@@ -35,42 +34,57 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
   isRescheduling = false
 }) => {
   const { t } = useLanguage();
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  const availableTimeSlots = timeSlots.filter(slot => {
-    const slotTime = parseISO(slot.startTime);
-    const isPastSlot = isPast(slotTime);
-    const isCurrentSlot = currentAppointmentTime && slot.startTime === currentAppointmentTime;
-    const isAvailable = slot.available;
-    const isWorkingHours = isWithinWorkingHours(slotTime);
-
-    return isAvailable && !isPastSlot && (!isRescheduling || !isCurrentSlot) && isWorkingHours;
-  });
-
-  const timeSlotsByDate = availableTimeSlots.reduce((acc, slot) => {
-    const date = parseISO(slot.startTime);
-    const dateKey = format(date, 'yyyy-MM-dd');
-    
-    if (!acc[dateKey]) {
-      acc[dateKey] = [];
-    }
-    
-    acc[dateKey].push(slot);
-    return acc;
-  }, {} as Record<string, TimeSlot[]>);
-
-  const availableDates = Object.keys(timeSlotsByDate)
+  const availableDates = useMemo(() => {
+    return Object.keys(
+      timeSlots.reduce((acc, slot) => {
+        const date = parseISO(slot.startTime);
+        if (!isPast(date) && isWithinWorkingHours(date)) {
+          const dateKey = format(date, 'yyyy-MM-dd');
+          if (!acc[dateKey]) {
+            acc[dateKey] = [];
+          }
+          acc[dateKey].push(slot);
+        }
+        return acc;
+      }, {} as Record<string, TimeSlot[]>)
+    )
     .map(dateStr => parseISO(dateStr))
     .sort((a, b) => a.getTime() - b.getTime());
+  }, [timeSlots]);
+
+  const [selectedDate, setSelectedDate] = useState<Date>(() => {
+    return availableDates.length > 0 
+      ? availableDates[0] 
+      : startOfTomorrow();
+  });
+
+  const slotsForSelectedDate = useMemo(() => {
+    return timeSlots
+      .filter(slot => {
+        const slotTime = parseISO(slot.startTime);
+        return (
+          isSameDay(slotTime, selectedDate) && 
+          !isPast(slotTime) && 
+          isWithinWorkingHours(slotTime) &&
+          slot.available
+        );
+      })
+      .sort((a, b) => parseISO(a.startTime).getTime() - parseISO(b.startTime).getTime());
+  }, [selectedDate, timeSlots]);
 
   React.useEffect(() => {
-    if (availableDates.length > 0 && !timeSlotsByDate[format(selectedDate, 'yyyy-MM-dd')]) {
-      setSelectedDate(availableDates[0]);
-    }
-  }, [availableDates.length]);
+    if (slotsForSelectedDate.length > 0) {
+      const defaultSlot = slotsForSelectedDate.find(slot => {
+        const slotTime = parseISO(slot.startTime);
+        return slotTime.getHours() === 21 || slotTime.getHours() === 20;
+      }) || slotsForSelectedDate[0];
 
-  // Only get slots for the specifically selected date
-  const slotsForSelectedDate = timeSlotsByDate[format(selectedDate, 'yyyy-MM-dd')] || [];
+      if (!selectedTimeSlot) {
+        onSelectTimeSlot(defaultSlot.id);
+      }
+    }
+  }, [slotsForSelectedDate, selectedTimeSlot]);
 
   const goToPreviousDate = () => {
     const currentIndex = availableDates.findIndex(date => 
