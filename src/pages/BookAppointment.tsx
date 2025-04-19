@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
@@ -145,7 +146,7 @@ const BookAppointment = () => {
           disabled={step === 1}
           className="flex items-center gap-2 px-6 py-3 text-lg"
         >
-          <ArrowLeft size={20} /> Back
+          <ArrowLeft size={20} /> {t('back')}
         </Button>
         
         {step < 4 && (
@@ -154,7 +155,7 @@ const BookAppointment = () => {
             disabled={!isStepComplete()}
             className="flex items-center gap-2 px-6 py-3 text-lg"
           >
-            Next <ArrowRight size={20} />
+            {t('next')} <ArrowRight size={20} />
           </Button>
         )}
       </div>

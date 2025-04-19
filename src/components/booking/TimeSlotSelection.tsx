@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { format, parseISO, isSameDay, isPast, addDays, startOfTomorrow } from 'date-fns';
 import { TimeSlot, Doctor } from '@/types';
@@ -54,6 +55,13 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
   }, [timeSlots]);
 
   const [selectedDate, setSelectedDate] = useState<Date>(() => {
+    if (selectedTimeSlot) {
+      const selectedSlot = timeSlots.find(slot => slot.id === selectedTimeSlot);
+      if (selectedSlot) {
+        return parseISO(selectedSlot.startTime);
+      }
+    }
+    
     return availableDates.length > 0 
       ? availableDates[0] 
       : startOfTomorrow();
@@ -74,17 +82,29 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
   }, [selectedDate, timeSlots]);
 
   React.useEffect(() => {
-    if (slotsForSelectedDate.length > 0) {
+    if (slotsForSelectedDate.length > 0 && !selectedTimeSlot) {
+      // If no time slot is selected, select a default one
       const defaultSlot = slotsForSelectedDate.find(slot => {
         const slotTime = parseISO(slot.startTime);
         return slotTime.getHours() === 21 || slotTime.getHours() === 20;
       }) || slotsForSelectedDate[0];
 
-      if (!selectedTimeSlot) {
-        onSelectTimeSlot(defaultSlot.id);
+      onSelectTimeSlot(defaultSlot.id);
+    }
+  }, [slotsForSelectedDate, selectedTimeSlot, onSelectTimeSlot]);
+
+  // Effect to update selected date when time slot changes
+  React.useEffect(() => {
+    if (selectedTimeSlot) {
+      const selectedSlot = timeSlots.find(slot => slot.id === selectedTimeSlot);
+      if (selectedSlot) {
+        const slotDate = parseISO(selectedSlot.startTime);
+        if (!isSameDay(slotDate, selectedDate)) {
+          setSelectedDate(slotDate);
+        }
       }
     }
-  }, [slotsForSelectedDate, selectedTimeSlot]);
+  }, [selectedTimeSlot, timeSlots, selectedDate]);
 
   const goToPreviousDate = () => {
     const currentIndex = availableDates.findIndex(date => 
