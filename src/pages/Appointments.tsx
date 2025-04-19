@@ -13,6 +13,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import TimeSlotSelection from '@/components/booking/TimeSlotSelection';
+import { Doctor } from '@/types';
+import { doctors } from '@/data/mockData';
 
 // Mock appointment data with available time slots
 const mockAppointments = [
@@ -20,6 +23,7 @@ const mockAppointments = [
     id: '1',
     doctorName: 'Dr. John Smith',
     departmentName: 'Cardiology',
+		doctorId: 'doc1',
     date: '2025-04-15T10:00:00.000Z',
     endTime: '2025-04-15T11:00:00.000Z',
     status: 'scheduled',
@@ -28,6 +32,7 @@ const mockAppointments = [
     id: '2',
     doctorName: 'Dr. Emily Johnson',
     departmentName: 'Dermatology',
+		doctorId: 'doc2',
     date: '2025-04-20T14:00:00.000Z',
     endTime: '2025-04-20T15:00:00.000Z',
     status: 'scheduled',
@@ -40,16 +45,22 @@ const mockAvailableTimeSlots = [
     id: 't1',
     startTime: '2025-04-22T09:00:00.000Z',
     endTime: '2025-04-22T10:00:00.000Z',
+		available: true,
+		doctorId: 'doc1',
   },
   {
     id: 't2',
     startTime: '2025-04-22T10:00:00.000Z',
     endTime: '2025-04-22T11:00:00.000Z',
+		available: true,
+		doctorId: 'doc1',
   },
   {
     id: 't3',
     startTime: '2025-04-22T14:00:00.000Z',
     endTime: '2025-04-22T15:00:00.000Z',
+		available: true,
+		doctorId: 'doc2',
   },
 ];
 
@@ -70,8 +81,10 @@ const Appointments = () => {
     setIsReschedulingOpen(true);
   };
 
-  const handleTimeSlotSelect = (newTimeSlot: typeof mockAvailableTimeSlots[0]) => {
-    if (selectedAppointment) {
+  const handleTimeSlotSelect = (newTimeSlotId: string) => {
+    const newTimeSlot = mockAvailableTimeSlots.find(slot => slot.id === newTimeSlotId);
+    
+    if (selectedAppointment && newTimeSlot) {
       setAppointments(appointments.map(app =>
         app.id === selectedAppointment.id
           ? {
@@ -218,40 +231,21 @@ const Appointments = () => {
 
       {/* Rescheduling Dialog */}
       <Dialog open={isReschedulingOpen} onOpenChange={setIsReschedulingOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>Reschedule Appointment</DialogTitle>
           </DialogHeader>
           
-          <div className="mt-4 space-y-4">
-            <div className="text-sm text-gray-600 mb-4">
-              Please select a new time slot for your appointment with {selectedAppointment?.doctorName}
-            </div>
-            
-            <div className="space-y-3">
-              {mockAvailableTimeSlots.map((slot) => (
-                <AccessibleCard
-                  key={slot.id}
-                  onClick={() => handleTimeSlotSelect(slot)}
-                  className="cursor-pointer hover:border-primary-500 transition-colors"
-                >
-                  <div className="flex items-center justify-between p-2">
-                    <div>
-                      <div className="font-medium">
-                        {format(parseISO(slot.startTime), 'EEEE, MMMM d, yyyy')}
-                      </div>
-                      <div className="text-gray-600">
-                        {format(parseISO(slot.startTime), 'h:mm a')} - {format(parseISO(slot.endTime), 'h:mm a')}
-                      </div>
-                    </div>
-                    <Button variant="outline" size="sm">
-                      Select
-                    </Button>
-                  </div>
-                </AccessibleCard>
-              ))}
-            </div>
-          </div>
+          {selectedAppointment && (
+            <TimeSlotSelection
+              timeSlots={mockAvailableTimeSlots}
+              selectedTimeSlot={null}
+              doctor={doctors.find(doc => doc.id === selectedAppointment.doctorId) || null}
+              onSelectTimeSlot={handleTimeSlotSelect}
+              currentAppointmentTime={selectedAppointment.date}
+              isRescheduling={true}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </Layout>

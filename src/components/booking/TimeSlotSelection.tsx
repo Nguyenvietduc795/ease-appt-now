@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { format, parseISO, isSameDay, isPast } from 'date-fns';
+import { format, parseISO, isSameDay, isPast, isAfter } from 'date-fns';
 import { TimeSlot, Doctor } from '@/types';
 import AccessibleCard from '../ui-components/AccessibleCard';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -11,20 +11,30 @@ interface TimeSlotSelectionProps {
   selectedTimeSlot: string | null;
   doctor: Doctor | null;
   onSelectTimeSlot: (timeSlotId: string) => void;
+  currentAppointmentTime?: string; // Optional, used for rescheduling
+  isRescheduling?: boolean;
 }
 
 const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
   timeSlots,
   selectedTimeSlot,
   doctor,
-  onSelectTimeSlot
+  onSelectTimeSlot,
+  currentAppointmentTime,
+  isRescheduling = false
 }) => {
   const { t } = useLanguage();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  const availableTimeSlots = timeSlots.filter(slot => 
-    slot.available && !isPast(parseISO(slot.startTime))
-  );
+  // Filter out past time slots and the current appointment slot when rescheduling
+  const availableTimeSlots = timeSlots.filter(slot => {
+    const slotTime = parseISO(slot.startTime);
+    const isPastSlot = isPast(slotTime);
+    const isCurrentSlot = currentAppointmentTime && slot.startTime === currentAppointmentTime;
+    const isAvailable = slot.available;
+
+    return isAvailable && !isPastSlot && (!isRescheduling || !isCurrentSlot);
+  });
 
   const timeSlotsByDate = availableTimeSlots.reduce((acc, slot) => {
     const date = parseISO(slot.startTime);
@@ -71,6 +81,7 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
   const renderTimeSlot = (slot: TimeSlot) => {
     const startTime = parseISO(slot.startTime);
     const endTime = parseISO(slot.endTime);
+    const isCurrentAppointment = currentAppointmentTime === slot.startTime;
     
     return (
       <AccessibleCard
@@ -78,13 +89,13 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
         selected={selectedTimeSlot === slot.id}
         onClick={() => onSelectTimeSlot(slot.id)}
         hoverable={true}
-        className="text-center cursor-pointer"
+        className={`text-center cursor-pointer ${isCurrentAppointment ? 'border-primary-500' : ''}`}
       >
         <p className="text-lg font-bold">
           {format(startTime, 'h:mm a')} - {format(endTime, 'h:mm a')}
         </p>
-        <p className="text-sm mt-2 text-green-600">
-          {t('available')}
+        <p className={`text-sm mt-2 ${isCurrentAppointment ? 'text-primary-600' : 'text-green-600'}`}>
+          {isCurrentAppointment ? t('current.slot') : t('available')}
         </p>
       </AccessibleCard>
     );
@@ -94,7 +105,7 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
     return (
       <div className="text-center py-8">
         <h3 className="text-xl font-medium text-gray-900 mb-2">
-          {t('no.slots')}
+          {isRescheduling ? t('no.slots.reschedule') : t('no.slots')}
         </h3>
         <p className="text-gray-600">
           {t('no.slots.message')}
@@ -105,7 +116,9 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold">{t('choose.slot')}</h2>
+      <h2 className="text-2xl font-bold">
+        {isRescheduling ? t('choose.new.slot') : t('choose.slot')}
+      </h2>
       
       {doctor && (
         <div className="bg-blue-50 rounded-lg p-4 mb-6">
@@ -123,7 +136,7 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
           onClick={goToPreviousDate}
           disabled={availableDates.findIndex(date => isSameDay(date, selectedDate)) === 0}
           className="p-2 rounded-full bg-white border border-gray-200 hover:bg-gray-100 disabled:opacity-50"
-          aria-label="Previous date"
+          aria-label={t('previous.date')}
         >
           <ChevronLeft size={24} />
         </button>
@@ -135,7 +148,7 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
           disabled={availableDates.findIndex(date => 
             isSameDay(date, selectedDate)) === availableDates.length - 1}
           className="p-2 rounded-full bg-white border border-gray-200 hover:bg-gray-100 disabled:opacity-50"
-          aria-label="Next date"
+          aria-label={t('next.date')}
         >
           <ChevronRight size={24} />
         </button>
@@ -159,9 +172,7 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
       
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {slotsForSelectedDate.length > 0 ? (
-          slotsForSelectedDate.map(slot => (
-            renderTimeSlot(slot)
-          ))
+          slotsForSelectedDate.map(slot => renderTimeSlot(slot))
         ) : (
           <p className="col-span-full text-center text-gray-500 py-8">
             {t('no.slots.date')}
@@ -173,3 +184,4 @@ const TimeSlotSelection: React.FC<TimeSlotSelectionProps> = ({
 };
 
 export default TimeSlotSelection;
+

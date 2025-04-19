@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 type Language = 'en' | 'vi';
@@ -59,6 +58,13 @@ export const translations = {
     'choose.slot': 'Choose Time Slot',
     'save': 'Save',
     'cancel': 'Cancel',
+
+    // Appointment Rescheduling
+    'choose.new.slot': 'Choose New Time Slot',
+    'no.slots.reschedule': 'No Available Time Slots for Rescheduling',
+    'current.slot': 'Current Appointment',
+    'previous.date': 'Previous date',
+    'next.date': 'Next date',
   },
   vi: {
     // Header & Navigation
@@ -107,6 +113,13 @@ export const translations = {
     'choose.slot': 'Chọn Thời Gian',
     'save': 'Lưu',
     'cancel': 'Hủy',
+
+    // Appointment Rescheduling
+    'choose.new.slot': 'Chọn Thời Gian Mới',
+    'no.slots.reschedule': 'Không Có Lịch Trống Để Đổi Lịch',
+    'current.slot': 'Lịch Hẹn Hiện Tại',
+    'previous.date': 'Ngày trước',
+    'next.date': 'Ngày sau',
   }
 };
 
