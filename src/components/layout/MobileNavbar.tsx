@@ -1,16 +1,17 @@
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Calendar, User, HelpCircle, Menu } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const MobileNavbar = () => {
   const location = useLocation();
+  const { translations } = useLanguage();
   
   const navItems = [
-    { icon: <Home size={24} />, label: 'Home', path: '/' },
-    { icon: <Calendar size={24} />, label: 'Appointments', path: '/appointments' },
-    { icon: <User size={24} />, label: 'Profile', path: '/profile' },
-    { icon: <HelpCircle size={24} />, label: 'Help', path: '/help' },
+    { icon: <Home size={24} />, label: translations.nav.home, path: '/' },
+    { icon: <Calendar size={24} />, label: translations.nav.appointments, path: '/appointments' },
+    { icon: <User size={24} />, label: translations.nav.profile, path: '/profile' },
+    { icon: <HelpCircle size={24} />, label: translations.nav.help, path: '/help' },
   ];
   
   return (

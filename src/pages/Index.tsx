@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
@@ -13,28 +12,31 @@ import {
   ArrowRight,
   CheckCircle
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Index = () => {
+  const { translations } = useLanguage();
+
   const features = [
     {
-      title: 'Easy Booking',
-      description: 'Book appointments with just a few taps, no complex forms',
+      title: 'Cơ Sở Hiện Đại',
+      description: 'Trang thiết bị y tế tiên tiến và cơ sở vật chất hiện đại',
       icon: <CalendarPlus size={28} />
     },
     {
-      title: 'Save Time',
-      description: 'No need to wait in long queues, book from anywhere',
+      title: 'Bác Sĩ Chuyên Môn',
+      description: 'Các chuyên gia có kinh nghiệm đa khoa',
+      icon: <UserRound size={28} />
+    },
+    {
+      title: 'Đặt Lịch Dễ Dàng',
+      description: 'Đặt lịch trực tuyến hoặc qua hotline 24/7',
       icon: <Clock size={28} />
     },
     {
-      title: 'Appointment Reminders',
-      description: 'Get SMS and email reminders before your appointment',
-      icon: <Calendar size={28} />
-    },
-    {
-      title: 'Doctor Selection',
-      description: 'Choose your preferred doctor from our specialists',
-      icon: <UserRound size={28} />
+      title: 'Chăm Sóc Chất Lượng',
+      description: 'Dịch vụ y tế đạt chuẩn quốc tế',
+      icon: <CheckCircle size={28} />
     }
   ];
 
@@ -45,31 +47,56 @@ const Index = () => {
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-3/5 mb-8 md:mb-0 md:pr-8">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
-              Book Your Hospital Appointment<br />
-              <span className="text-primary-600">Without The Wait</span>
+              Bệnh Viện Nam Cần Thơ<br />
+              <span className="text-primary-600">Dịch Vụ Y Tế Chuyên Nghiệp</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-700 mb-8">
-              Simple, quick, and convenient way to schedule your next doctor visit
+              Cơ sở y tế hiện đại với dịch vụ chăm sóc đạt chuẩn quốc tế
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/book">
+              <Link to="/book-appointment">
                 <Button size="lg" className="px-8 py-6 text-xl w-full sm:w-auto">
-                  Book Appointment
+                  {translations.nav.bookAppointment}
                 </Button>
               </Link>
-              <Link to="/help">
-                <Button variant="outline" size="lg" className="px-8 py-6 text-xl w-full sm:w-auto">
-                  Learn How It Works
+              <a href="tel:+842923831981">
+                <Button variant="outline" size="lg" className="px-8 py-6 text-xl w-full sm:w-auto flex items-center gap-2">
+                  <Phone size={20} />
+                  Đường Dây Nóng
                 </Button>
-              </Link>
+              </a>
             </div>
           </div>
-          <div className="md:w-2/5">
+          
+          <div className="relative">
+            {/* Main Hospital Image */}
             <img 
-              src="/placeholder.svg" 
-              alt="Hospital appointment booking" 
-              className="rounded-xl shadow-lg w-full h-auto"
+              src="/hospital-building.jpg"
+              alt="Bệnh Viện Nam Cần Thơ" 
+              className="w-full h-auto rounded-2xl shadow-lg"
             />
+            
+            {/* Floating Card */}
+            <div className="absolute -bottom-6 -right-6 bg-white rounded-xl shadow-lg p-4 max-w-[200px]">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+                  <UserRound className="w-6 h-6 text-primary-600" />
+                </div>
+                <div>
+                  <div className="text-sm font-medium">Bác Sĩ Chuyên Môn</div>
+                  <div className="text-xs text-gray-500">Đa Chuyên Khoa</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+                  <Clock className="w-6 h-6 text-primary-600" />
+                </div>
+                <div>
+                  <div className="text-sm font-medium">Dịch Vụ 24/7</div>
+                  <div className="text-xs text-gray-500">Cấp Cứu</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -77,33 +104,33 @@ const Index = () => {
       {/* Quick Actions */}
       <section className="mb-12">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <Link to="/book">
+          <Link to="/book-appointment">
             <IconButton 
               icon={<CalendarPlus size={40} />} 
-              label="Book Appointment"
+              label={translations.nav.bookAppointment}
               className="h-32 w-full"
             />
           </Link>
           <Link to="/appointments">
             <IconButton 
               icon={<Calendar size={40} />} 
-              label="My Appointments"
+              label={translations.nav.appointments}
               variant="outline"
               className="h-32 w-full"
             />
           </Link>
-          <Link to="/help">
+          <a href="tel:+842923831981">
             <IconButton 
               icon={<Phone size={40} />} 
-              label="Contact Us"
+              label="Cấp cứu: 02923.831.981"
               variant="outline"
               className="h-32 w-full"
             />
-          </Link>
+          </a>
           <Link to="/profile">
             <IconButton 
               icon={<UserRound size={40} />} 
-              label="My Profile"
+              label={translations.nav.profile}
               variant="outline"
               className="h-32 w-full"
             />
@@ -111,9 +138,28 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Key Departments */}
+      <section className="mb-12">
+        <h2 className="text-3xl font-bold mb-8 text-center">Các Khoa Chính</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-xl font-bold mb-2">Khoa Nội</h3>
+            <p className="text-gray-600">Chẩn đoán và điều trị toàn diện các bệnh nội khoa</p>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-xl font-bold mb-2">Khoa Ngoại</h3>
+            <p className="text-gray-600">Phẫu thuật hiện đại với các bác sĩ có kinh nghiệm</p>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="text-xl font-bold mb-2">Sản Phụ Khoa</h3>
+            <p className="text-gray-600">Chăm sóc chuyên biệt cho sức khỏe phụ nữ</p>
+          </div>
+        </div>
+      </section>
+
       {/* Features */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-8 text-center">Why Use Our Online Booking</h2>
+        <h2 className="text-3xl font-bold mb-8 text-center">Tại Sao Chọn Bệnh Viện Nam Cần Thơ</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
             <div 
@@ -128,101 +174,23 @@ const Index = () => {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8 mb-12">
-        <h2 className="text-3xl font-bold mb-8 text-center">How It Works</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="flex flex-col items-center text-center">
-            <div className="w-16 h-16 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 text-2xl font-bold mb-4">
-              1
-            </div>
-            <h3 className="text-xl font-bold mb-2">Choose Department & Doctor</h3>
-            <p className="text-gray-600">
-              Select your medical department and preferred doctor from our specialists
-            </p>
-          </div>
-          <div className="flex flex-col items-center text-center">
-            <div className="w-16 h-16 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 text-2xl font-bold mb-4">
-              2
-            </div>
-            <h3 className="text-xl font-bold mb-2">Select Date & Time</h3>
-            <p className="text-gray-600">
-              Pick an available time slot that works best for your schedule
-            </p>
-          </div>
-          <div className="flex flex-col items-center text-center">
-            <div className="w-16 h-16 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 text-2xl font-bold mb-4">
-              3
-            </div>
-            <h3 className="text-xl font-bold mb-2">Confirm & Get QR Code</h3>
-            <p className="text-gray-600">
-              Receive your appointment QR code to skip the queue when you arrive
-            </p>
-          </div>
-        </div>
-        <div className="text-center mt-8">
-          <Link to="/book">
-            <Button className="gap-2 px-8 py-6 text-lg">
-              Book Your Appointment Now
-              <ArrowRight size={20} />
-            </Button>
-          </Link>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-8 text-center">Patient Experiences</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            {
-              name: "Maria G.",
-              age: 67,
-              text: "This system made it so easy to book my appointment. No more waiting in long lines!"
-            },
-            {
-              name: "Robert T.",
-              age: 72,
-              text: "The large text and simple steps helped me book appointments without asking my grandchildren for help."
-            },
-            {
-              name: "Susan L.",
-              age: 58,
-              text: "I love the reminder feature. I never miss my appointments now. Very convenient!"
-            }
-          ].map((testimonial, index) => (
-            <div 
-              key={index}
-              className="bg-white p-6 rounded-xl shadow-sm border border-gray-200"
-            >
-              <div className="flex items-start mb-4">
-                <div className="mr-4 mt-1">
-                  <CheckCircle size={20} className="text-green-500" />
-                </div>
-                <p className="italic text-gray-700">{testimonial.text}</p>
-              </div>
-              <div className="font-medium">
-                {testimonial.name}, {testimonial.age}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Help Banner */}
+      {/* Contact Section */}
       <section className="bg-primary-100 rounded-xl p-6 text-center mb-8">
-        <h2 className="text-2xl font-bold mb-2">Need Help Booking?</h2>
+        <h2 className="text-2xl font-bold mb-2">Liên Hệ</h2>
         <p className="text-lg mb-4">
-          Our support team is just a call away
+          Dịch vụ y tế chuyên nghiệp có sẵn 24/7
         </p>
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-2">
           <a 
-            href="tel:+18001234567" 
+            href="tel:+842923831981" 
             className="inline-flex items-center text-primary-700 text-xl font-bold gap-2"
           >
             <Phone size={24} />
-            1-800-123-4567
+            02923.831.981
           </a>
+          <p className="text-gray-600">
+            Địa chỉ: 448B Đường Nguyễn Thị Minh Khai, Phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ
+          </p>
         </div>
       </section>
     </Layout>

@@ -1,4 +1,3 @@
-
 // Department Types
 export interface Department {
   id: string;
@@ -20,10 +19,10 @@ export interface Doctor {
 // TimeSlot Types
 export interface TimeSlot {
   id: string;
-  doctorId: string;
-  startTime: string; // ISO string
-  endTime: string;   // ISO string
-  available: boolean;
+  startTime: string;
+  endTime: string;
+  label: string;
+  isAvailable: boolean;
 }
 
 // Appointment Types

@@ -1,0 +1,72 @@
+{
+  "titles": {
+    "dr": "Bác sĩ",
+    "prof": "Giáo sư"
+  },
+  "specialties": {
+    "cardiology": "Tim mạch",
+    "dermatology": "Da liễu",
+    "neurology": "Thần kinh",
+    "pediatrics": "Nhi khoa",
+    "ophthalmology": "Mắt"
+  },
+  "common": {
+    "book_appointment": "Đặt lịch khám",
+    "view_profile": "Xem hồ sơ",
+    "available": "Có lịch trống",
+    "unavailable": "Không có lịch trống"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "appointments": "Lịch hẹn của tôi",
+    "profile": "Hồ sơ",
+    "help": "Trợ giúp",
+    "book": "Đặt lịch hẹn"
+  },
+  "booking": {
+    "title": "Đặt lịch hẹn",
+    "subtitle": "Làm theo các bước đơn giản để đặt lịch khám",
+    "steps": {
+      "department": "Khoa",
+      "doctor": "Bác sĩ",
+      "time": "Thời gian",
+      "confirm": "Xác nhận"
+    },
+    "selectDate": "Chọn ngày",
+    "selectTime": "Chọn giờ",
+    "noTimeSlots": "Không có giờ trống cho ngày này",
+    "pleaseSelectDate": "Vui lòng chọn ngày trước",
+    "selectedTime": "Thời gian đã chọn"
+  },
+  "confirmation": {
+    "title": "Xác nhận lịch hẹn",
+    "doctor": "Bác sĩ",
+    "department": "Khoa",
+    "date": "Ngày",
+    "time": "Giờ",
+    "scanQR": "Quét mã này tại bệnh viện",
+    "arriveEarly": "Vui lòng đến trước giờ hẹn 15 phút",
+    "bringDocuments": "Mang theo CMND/CCCD và thẻ BHYT (nếu có)",
+    "confirmButton": "Xác nhận đặt lịch"
+  },
+  "reschedule": {
+    "title": "Đặt lại lịch hẹn",
+    "currentAppointment": "Lịch hẹn hiện tại với bác sĩ {{doctor}} tại {{department}}",
+    "time": "Thời gian",
+    "selectDate": "Chọn ngày",
+    "selectTime": "Chọn giờ",
+    "selectedTime": "Thời gian đã chọn",
+    "pleaseSelect": "Vui lòng chọn ngày và giờ cho lịch hẹn",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận thay đổi"
+  },
+  "common": {
+    "next": "Tiếp theo",
+    "back": "Quay lại",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "success": "Thành công",
+    "error": "Lỗi",
+    "loading": "Đang tải..."
+  }
+} 

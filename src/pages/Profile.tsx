@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import PageTitle from '@/components/ui-components/PageTitle';
 import { Button } from '@/components/ui/button';
@@ -7,8 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/components/ui/sonner';
 import { User, Phone, Mail, Map, Save, Edit2 } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Profile = () => {
+  const { translations, language, setLanguage } = useLanguage();
+  
   // Mock user data
   const [user, setUser] = useState({
     name: 'John Doe',
@@ -31,21 +33,26 @@ const Profile = () => {
   const handleSave = () => {
     setUser(formData);
     setIsEditing(false);
-    toast.success('Profile updated successfully');
+    toast.success(language === 'en' ? 'Profile updated successfully' : 'Cập nhật hồ sơ thành công');
   };
   
   const handleCancel = () => {
     setFormData(user);
     setIsEditing(false);
   };
+
+  // Handle language change
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLanguage(e.target.value as 'en' | 'vi');
+  };
   
   return (
     <Layout>
-      <PageTitle title="My Profile" />
+      <PageTitle title={translations.profile.title} />
       
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8 mb-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Personal Information</h2>
+          <h2 className="text-2xl font-bold">{translations.profile.personalInfo}</h2>
           {!isEditing && (
             <Button 
               variant="outline"
@@ -53,7 +60,7 @@ const Profile = () => {
               className="gap-2"
             >
               <Edit2 size={18} />
-              Edit Profile
+              {translations.profile.edit}
             </Button>
           )}
         </div>
@@ -64,7 +71,7 @@ const Profile = () => {
             <div>
               <Label htmlFor="name" className="text-base flex items-center gap-2 mb-2">
                 <User size={18} className="text-primary-500" />
-                Full Name
+                {translations.profile.name}
               </Label>
               {isEditing ? (
                 <Input
@@ -83,7 +90,7 @@ const Profile = () => {
             <div>
               <Label htmlFor="phoneNumber" className="text-base flex items-center gap-2 mb-2">
                 <Phone size={18} className="text-primary-500" />
-                Phone Number
+                {translations.profile.phone}
               </Label>
               {isEditing ? (
                 <Input
@@ -102,7 +109,7 @@ const Profile = () => {
             <div>
               <Label htmlFor="email" className="text-base flex items-center gap-2 mb-2">
                 <Mail size={18} className="text-primary-500" />
-                Email
+                {translations.profile.email}
               </Label>
               {isEditing ? (
                 <Input
@@ -122,7 +129,7 @@ const Profile = () => {
             <div>
               <Label htmlFor="address" className="text-base flex items-center gap-2 mb-2">
                 <Map size={18} className="text-primary-500" />
-                Address
+                {translations.profile.address}
               </Label>
               {isEditing ? (
                 <Input
@@ -141,11 +148,11 @@ const Profile = () => {
           {isEditing && (
             <div className="flex gap-4 justify-end mt-8">
               <Button variant="outline" onClick={handleCancel} className="px-6">
-                Cancel
+                {translations.common.cancel}
               </Button>
               <Button onClick={handleSave} className="gap-2 px-6">
                 <Save size={18} />
-                Save Changes
+                {translations.common.save}
               </Button>
             </div>
           )}
@@ -153,11 +160,11 @@ const Profile = () => {
       </div>
       
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8">
-        <h2 className="text-2xl font-bold mb-6">Account Settings</h2>
+        <h2 className="text-2xl font-bold mb-6">{translations.profile.personalInfo}</h2>
         
         <div className="space-y-6">
           <div>
-            <h3 className="text-xl font-medium mb-3">Notification Preferences</h3>
+            <h3 className="text-xl font-medium mb-3">Tùy Chọn Thông Báo</h3>
             <div className="space-y-3">
               <div className="flex items-center">
                 <input 
@@ -167,7 +174,7 @@ const Profile = () => {
                   defaultChecked 
                 />
                 <label htmlFor="sms-notifications" className="ml-3 text-lg">
-                  SMS Appointment Reminders
+                  Nhắc Nhở Lịch Hẹn Qua SMS
                 </label>
               </div>
               
@@ -179,21 +186,21 @@ const Profile = () => {
                   defaultChecked 
                 />
                 <label htmlFor="email-notifications" className="ml-3 text-lg">
-                  Email Notifications
+                  Thông Báo Qua Email
                 </label>
               </div>
             </div>
           </div>
           
           <div>
-            <h3 className="text-xl font-medium mb-3">Language Preference</h3>
+            <h3 className="text-xl font-medium mb-3">Tùy Chọn Ngôn Ngữ</h3>
             <select 
               className="bg-white border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-4"
+              value={language}
+              onChange={handleLanguageChange}
             >
               <option value="en">English</option>
-              <option value="es">Spanish</option>
-              <option value="vi">Vietnamese</option>
-              <option value="zh">Chinese</option>
+              <option value="vi">Tiếng Việt</option>
             </select>
           </div>
         </div>

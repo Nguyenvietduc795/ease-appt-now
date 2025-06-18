@@ -1,8 +1,8 @@
-
 import React from 'react';
 import AccessibleCard from '../ui-components/AccessibleCard';
 import { Department } from '@/types';
 import { Brain, Heart, Bone, Baby, ScanFace, Eye } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface DepartmentSelectionProps {
   departments: Department[];
@@ -15,6 +15,8 @@ const DepartmentSelection: React.FC<DepartmentSelectionProps> = ({
   selectedDepartment,
   onSelectDepartment
 }) => {
+  const { translations } = useLanguage();
+
   // Map department icons to components
   const getIcon = (iconName: string) => {
     const size = 32;
@@ -38,7 +40,7 @@ const DepartmentSelection: React.FC<DepartmentSelectionProps> = ({
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Choose Department</h2>
+      <h2 className="text-2xl font-bold">{translations.booking.chooseDepartment}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {departments.map((department) => (
           <AccessibleCard

@@ -1,0 +1,72 @@
+{
+  "titles": {
+    "dr": "Dr.",
+    "prof": "Prof."
+  },
+  "specialties": {
+    "cardiology": "Cardiology",
+    "dermatology": "Dermatology",
+    "neurology": "Neurology",
+    "pediatrics": "Pediatrics",
+    "ophthalmology": "Ophthalmology"
+  },
+  "common": {
+    "book_appointment": "Book Appointment",
+    "view_profile": "View Profile",
+    "available": "Available",
+    "unavailable": "Unavailable"
+  },
+  "nav": {
+    "home": "Home",
+    "appointments": "My Appointments",
+    "profile": "Profile",
+    "help": "Help",
+    "book": "Book Appointment"
+  },
+  "booking": {
+    "title": "Book an Appointment",
+    "subtitle": "Follow these simple steps to schedule your visit",
+    "steps": {
+      "department": "Department",
+      "doctor": "Doctor",
+      "time": "Time",
+      "confirm": "Confirm"
+    },
+    "selectDate": "Select Date",
+    "selectTime": "Select Time",
+    "noTimeSlots": "No available time slots for this date",
+    "pleaseSelectDate": "Please select a date first",
+    "selectedTime": "Selected Time"
+  },
+  "confirmation": {
+    "title": "Confirm Appointment",
+    "doctor": "Doctor",
+    "department": "Department",
+    "date": "Date",
+    "time": "Time",
+    "scanQR": "Scan this code at the hospital",
+    "arriveEarly": "Please arrive 15 minutes before your appointment time",
+    "bringDocuments": "Please bring your ID card and insurance card (if applicable)",
+    "confirmButton": "Confirm Booking"
+  },
+  "reschedule": {
+    "title": "Reschedule Appointment",
+    "currentAppointment": "Current appointment with Dr. {{doctor}} at {{department}}",
+    "time": "Time",
+    "selectDate": "Select Date",
+    "selectTime": "Select Time",
+    "selectedTime": "Selected Time",
+    "pleaseSelect": "Please select date and time for your appointment",
+    "cancel": "Cancel",
+    "confirm": "Confirm Changes"
+  },
+  "common": {
+    "next": "Next",
+    "back": "Back",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "success": "Success",
+    "error": "Error",
+    "loading": "Loading..."
+  }
+} 

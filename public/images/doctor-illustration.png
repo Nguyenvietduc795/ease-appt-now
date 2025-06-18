@@ -1,0 +1,7 @@
+// This is a binary file placeholder. The actual image file needs to be copied here. 
+
+<img 
+  src="https://raw.githubusercontent.com/medical-illustrations/healthcare/main/doctor-consultation.png" 
+  alt="Doctor consultation illustration" 
+  className="w-full h-auto rounded-2xl shadow-lg"
+/> 

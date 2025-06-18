@@ -1,7 +1,7 @@
-
 import React from 'react';
 import AccessibleCard from '../ui-components/AccessibleCard';
 import { Doctor } from '@/types';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface DoctorSelectionProps {
   doctors: Doctor[];
@@ -14,9 +14,11 @@ const DoctorSelection: React.FC<DoctorSelectionProps> = ({
   selectedDoctor,
   onSelectDoctor
 }) => {
+  const { translations } = useLanguage();
+
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Choose Doctor</h2>
+      <h2 className="text-2xl font-bold">{translations.booking.chooseDoctor}</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {doctors.map((doctor) => (
           <AccessibleCard
@@ -35,7 +37,7 @@ const DoctorSelection: React.FC<DoctorSelectionProps> = ({
             <div>
               <h3 className="text-xl font-bold mb-1">{doctor.name}</h3>
               <p className="text-gray-700 mb-2">{doctor.specialization}</p>
-              <p className="text-gray-600 text-sm">{doctor.experience} experience</p>
+              <p className="text-gray-600 text-sm">{doctor.experience} {translations.common.experience || 'experience'}</p>
             </div>
           </AccessibleCard>
         ))}
